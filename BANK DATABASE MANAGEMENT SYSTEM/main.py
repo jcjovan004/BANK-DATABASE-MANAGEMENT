@@ -1,10 +1,9 @@
 import mysql.connector
 from abc import ABC, abstractmethod
 
-# Abstract class representing a person (Abstraction)
 class Person(ABC):
     def __init__(self, name, email):
-        self._name = name  # Encapsulation: Protected variable
+        self._name = name  
         self._email = email
 
     @abstractmethod
@@ -20,7 +19,7 @@ class Database:
                 password=password,
                 database=database
             )
-            self.__cursor = self.__connection.cursor()  # Encapsulation: Private variables
+            self.__cursor = self.__connection.cursor() 
         except mysql.connector.Error as err:
             print(f"Error connecting to the database: {err}")
         
@@ -49,20 +48,19 @@ class Database:
         self.__cursor.close()
         self.__connection.close()
 
-# Inheriting from Person (Inheritance)
 class Customer(Person):
     def __init__(self, customer_id, name, email):
-        super().__init__(name, email)  # Call to parent class constructor
-        self._customer_id = customer_id  # Private variable
+        super().__init__(name, email)  
+        self._customer_id = customer_id  
 
     def get_details(self):
-        return {"Customer ID": self._customer_id, "Name": self._name, "Email": self._email}  # Abstract method
+        return {"Customer ID": self._customer_id, "Name": self._name, "Email": self._email}  
 
 class Account:
     def __init__(self, account_id, customer_id, balance):
-        self._account_id = account_id  # Changed from private to protected
+        self._account_id = account_id  
         self._customer_id = customer_id
-        self._balance = float(balance)  # Ensure balance is a float
+        self._balance = float(balance) 
 
     def deposit(self, amount):
         self._balance += float(amount)
@@ -80,7 +78,7 @@ class Account:
     def get_balance(self):
         return self._balance 
 
-# Derived class for specialized types of accounts (Inheritance)
+
 class SavingsAccount(Account):
     def __init__(self, account_id, customer_id, balance, interest_rate):
         super().__init__(account_id, customer_id, balance)
@@ -89,7 +87,7 @@ class SavingsAccount(Account):
     def apply_interest(self):
         self._balance += self._balance * self.__interest_rate
         query = "UPDATE accounts SET balance = %s WHERE account_id = %s"
-        db.execute_query(query, (self._balance, self._account_id))  # Use protected _account_id
+        db.execute_query(query, (self._balance, self._account_id))
 
 class Bank:
     def __init__(self, db):
@@ -118,7 +116,7 @@ class Bank:
         query = "SELECT * FROM accounts WHERE account_id = %s"
         result = self.db.fetch_all(query, (account_id,))
         if result:
-            return Account(result[0][0], result[0][1], float(result[0][2]))  # Convert to float
+            return Account(result[0][0], result[0][1], float(result[0][2])) 
         return None
 
     def transfer(self, from_account_id, to_account_id, amount):
@@ -132,13 +130,13 @@ class Bank:
         else:
             print("Insufficient balance for transfer.")
             
-# Instantiate Database
+
 db = Database(host='localhost', user='root', password='Jovan1234', database='bank_system')
 
-# Instantiate Bank
+
 bank = Bank(db)
 
-# Example usage
+
 def main():
     customer = bank.create_customer('John Doe', 'john.doe@example.com')
     
